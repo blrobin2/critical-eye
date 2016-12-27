@@ -133,7 +133,6 @@
     const search_container = document.getElementById('search_results');
   </script>
   <script>
-    const album_collection = [];
     const add_listened = document.getElementById('add_listened');
 
     const db = new Dexie("albums_listened");
@@ -173,7 +172,6 @@
     }
 
     function human_date(date) {
-      console.log(date);
       return new Date(date).toDateString();
     }
 
