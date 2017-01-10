@@ -14,6 +14,9 @@
     .result {
       list-style: none;
     }
+    .artwork {
+      max-width: 64px;
+    }
   </style>
 </head>
 <body>
@@ -111,7 +114,7 @@
       <tbody>
         {{#each albums}}
           <tr id="{{spotifyId}}" class="album_row">
-            <td><img src="{{artwork}}"></td>
+            <td><img src="{{artwork}}" class="artwork"></td>
             <td>{{rating}}</td>
             <td>{{artist}}</a></td>
             <td><a href="{{href}}" target="_blank">{{album}}</a></td>
