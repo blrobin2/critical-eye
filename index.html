@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Critical Eye</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css">
   <style>
     :required {
       border-color: red;
@@ -111,7 +112,7 @@
     </ul>
   </script>
   <script id="listened-template" type="text/x-handlebars-template">
-    <table class="table table=striped">
+    <table id="listened-table" class="table table=striped">
       <thead>
         <tr>
           <th>Artwork</th>
@@ -136,6 +137,9 @@
   </script>
   <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
   <script>
     const listened_source = document.getElementById('listened-template').innerHTML;
     const listened_tmpl = Handlebars.compile(listened_source);
@@ -157,7 +161,14 @@
       console.error(`Open failed: ${e}`);
     });
 
-    get_albums();
+    get_albums().then(() => {
+      $('#listened-table').DataTable({
+        columnDefs: [
+          { orderable: false, targets: 0 }
+        ],
+        order: [[1, 'desc']]
+      });
+    });
 
     async function get_albums() {
       const albums = await db.albums.orderBy('rating').desc().toArray();
