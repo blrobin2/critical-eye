@@ -150,7 +150,7 @@
     get_albums();
 
     async function get_albums() {
-      const albums = await db.albums.toArray();
+      const albums = await db.albums.sortBy('rating').toArray();
       const formatted = albums.map(build_album_data);
 
       listended_container.innerHTML = listened_tmpl({albums: formatted});
