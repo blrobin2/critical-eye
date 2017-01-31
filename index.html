@@ -11,8 +11,19 @@
     :required:valid {
       border-color: green;
     }
+    .search-results ul {
+      padding-left: 0;
+    }
     .result {
       list-style: none;
+      background: #eee;
+      padding: 0.5em;
+      margin: .5em 0;
+      border-radius: .5em;
+    }
+
+    .result:nth-child(even) {
+      background: #ccc;
     }
     .artwork {
       max-width: 64px;
@@ -23,7 +34,7 @@
   <div class="container-fluid">
     <h1>Critical Eye</h1>
     <div class="row">
-      <div class="col-sm-6">
+      <div class="col-sm-4">
         <form id="search_album" class="form form-inline" >
           <div class="form-group">
             <label for="q" class="sr-only">Search Query:</label>
@@ -32,7 +43,7 @@
           <button type="submit" class="btn btn-primary">Search</button>
         </form>
 
-        <div id="search_results"></div>
+        <div id="search_results" class="search-results"></div>
 
         <form id="add_listened" class="form">
           <div class="form-group">
@@ -78,8 +89,7 @@
           <button type="submit" class="btn btn-primary">Save</button>
         </form>
       </div>
-      <div class="col-sm-6" id="listened">
-      </div>
+      <div class="col-sm-8" id="listened"></div>
     </div>
   </div>
   <script id="search-template" type="text/x-handlebars-template">
@@ -94,7 +104,7 @@
           <img src="{{artwork}}" width="45"> {{artist}}: {{album}}
           <div class="btn-group btn-group-sm" role="group" aria-label="...">
             <a class="btn btn-sm btn-success" href="{{href}}" target="_blank">Listen</a>
-            <button class="btn btn-sm btn-default review_button">Review</button>
+            <button class="btn btn-sm btn-info review_button">Review</button>
           </div>
         </li>
       {{/each}}
@@ -150,7 +160,7 @@
     get_albums();
 
     async function get_albums() {
-      const albums = await db.albums.sortBy('rating').toArray();
+      const albums = await db.albums.orderBy('rating').desc().toArray();
       const formatted = albums.map(build_album_data);
 
       listended_container.innerHTML = listened_tmpl({albums: formatted});
