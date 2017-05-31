@@ -148,8 +148,7 @@
     const search_source = document.getElementById('search-template').innerHTML;
     const search_tmpl = Handlebars.compile(search_source);
     const search_container = document.getElementById('search_results');
-  </script>
-  <script>
+
     const add_listened = document.getElementById('add_listened');
 
     const db = new Dexie("albums_listened");
@@ -207,7 +206,7 @@
     search_album.addEventListener('submit', async e => {
       e.preventDefault();
       const query          = e.target.q.value;
-      const search_json    = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=album`);
+      const search_json    = await fetch(`/search?q=${query}`);
       const search_results = await search_json.json();
 
       const formatted = search_results.albums.items.map(album => ({
