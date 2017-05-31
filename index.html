@@ -125,7 +125,7 @@
       <tbody>
         {{#each albums}}
           <tr id="{{spotifyId}}" class="album_row">
-            <td><img src="{{artwork}}" class="artwork"></td>
+            <td></td>
             <td>{{rating}}</td>
             <td>{{artist}}</a></td>
             <td><a href="{{href}}" target="_blank">{{album}}</a></td>
@@ -207,7 +207,7 @@
     search_album.addEventListener('submit', async e => {
       e.preventDefault();
       const query          = e.target.q.value;
-      const search_json    = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=album`)
+      const search_json    = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=album`);
       const search_results = await search_json.json();
 
       const formatted = search_results.albums.items.map(album => ({
