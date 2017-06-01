@@ -33,7 +33,7 @@ app.get('/search', (req, res) => {
   }
 
   spotifyApi.searchAlbums(req.query.q).then(albums => {
-    res.json({albums: albums})
+    res.json({albums: albums.body.albums})
   }, err => {
     console.error(err)
   })

@@ -33,7 +33,16 @@
 </head>
 <body>
   <div class="container-fluid">
-    <h1>Critical Eye</h1>
+    <div class="row">
+      <div class="col-sm-6">
+        <h1>Critical Eye</h1>
+      </div>
+      <div class="col-sm-6">
+        <h1 class="pull-right">
+          <button id="export" class="btn btn-success">Export</button>
+        </h1>
+      </div>
+    </div>
     <div class="row">
       <div class="col-sm-4">
         <form id="search_album" class="form form-inline" >
@@ -168,6 +177,32 @@
         order: [[1, 'desc']]
       });
     });
+
+    document.getElementById('export').addEventListener('click', async () => {
+      const file = await export_stuff(db)
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(file));
+      const dlAnchorElem = document.createElement('a');
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", `critical-eye-${Date.now()}.json`);
+      dlAnchorElem.click();
+    });
+
+    function export_stuff(db) {
+        return db.transaction('r', db.tables, ()=>{
+            return Dexie.Promise.all(
+                db.tables.map(table => table.toArray()
+                    .then(rows => ({table: table.name, rows: rows}))));
+        });
+    }
+
+    function import_stuff(data, db) {
+        return db.transaction('rw', db.tables, () => {
+            return Dexie.Promise.all(data.map (t =>
+                db.table(t.table).clear()
+                  .then(()=>db.table(t.table).bulkAdd(t.rows))));
+        });
+    }
 
     async function get_albums() {
       const albums = await db.albums.orderBy('rating').desc().toArray();
