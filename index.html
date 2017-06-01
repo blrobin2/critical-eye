@@ -172,11 +172,11 @@
     });
 
     document.getElementById('export').addEventListener('click', async () => {
-      const file = await export(db)
+      const file = await export_stuff(db)
       console.log(file)
     })
 
-    function export(db) {
+    function export_stuff(db) {
         return db.transaction('r', db.tables, ()=>{
             return Promise.all(
                 db.tables.map(table => table.toArray()
@@ -184,7 +184,7 @@
         });
     }
 
-    function import(data, db) {
+    function import_stuff(data, db) {
         return db.transaction('rw', db.tables, () => {
             return Promise.all(data.map (t =>
                 db.table(t.table).clear()
