@@ -34,6 +34,7 @@
 <body>
   <div class="container-fluid">
     <h1>Critical Eye</h1>
+    <button id="export">Export</button>
     <div class="row">
       <div class="col-sm-4">
         <form id="search_album" class="form form-inline" >
@@ -169,6 +170,27 @@
         order: [[1, 'desc']]
       });
     });
+
+    document.getElementById('export').addEventListener('click', async () => {
+      const file = await export(db)
+      console.log(file)
+    })
+
+    function export(db) {
+        return db.transaction('r', db.tables, ()=>{
+            return Promise.all(
+                db.tables.map(table => table.toArray()
+                    .then(rows => ({table: table.name, rows: rows})));
+        });
+    }
+
+    function import(data, db) {
+        return db.transaction('rw', db.tables, () => {
+            return Promise.all(data.map (t =>
+                db.table(t.table).clear()
+                  .then(()=>db.table(t.table).bulkAdd(t.rows)));
+        });
+    }
 
     async function get_albums() {
       const albums = await db.albums.orderBy('rating').desc().toArray();
