@@ -1,0 +1,27 @@
+{
+  "name": "critical-eye",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blrobin2/critical-eye.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blrobin2/critical-eye/issues"
+  },
+  "homepage": "https://github.com/blrobin2/critical-eye#readme",
+  "dependencies": {
+    "config": "^1.26.1",
+    "express": "^4.15.3",
+    "pug": "^2.0.0-rc.1",
+    "spotify-web-api-node": "^2.4.0"
+  }
+}
