@@ -38,9 +38,12 @@
         <h1>Critical Eye</h1>
       </div>
       <div class="col-sm-6">
-        <h1 class="pull-right">
+          <form name="import_data" class="form-inline" method="POST">
+            <label for="file">File</label>
+            <input type="file" name="file" id="file" class="form-control">
+            <button type="submit" class="btn btn-secondary">Import</button>
+          </form>
           <button id="export" class="btn btn-success">Export</button>
-        </h1>
       </div>
     </div>
     <div class="row">
@@ -186,6 +189,18 @@
       dlAnchorElem.setAttribute("href", dataStr);
       dlAnchorElem.setAttribute("download", `critical-eye-${Date.now()}.json`);
       dlAnchorElem.click();
+    });
+
+    document.forms.import_data.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const file = document.forms.import_data.file.files[0];
+      const fileReader = new FileReader();
+      fileReader.onloadend = function onFileLoaded(e) {
+        const contents = JSON.parse(e.target.result);
+        import_stuff(contents, db);
+      };
+
+      fileReader.readAsText(file, 'UTF-8');
     });
 
     function export_stuff(db) {
