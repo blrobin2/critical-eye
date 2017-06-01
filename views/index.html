@@ -29,6 +29,12 @@
     .artwork {
       max-width: 64px;
     }
+    .import-export {
+      margin-top: 20px;
+    }
+    .export {
+      margin-left: 1em;
+    }
   </style>
 </head>
 <body>
@@ -37,13 +43,13 @@
       <div class="col-sm-6">
         <h1>Critical Eye</h1>
       </div>
-      <div class="col-sm-6">
-          <form name="import_data" class="form-inline" method="POST">
-            <label for="file">File</label>
-            <input type="file" name="file" id="file" class="form-control">
-            <button type="submit" class="btn btn-secondary">Import</button>
-          </form>
-          <button id="export" class="btn btn-success">Export</button>
+      <div class="col-sm-6 import-export">
+        <button id="export" class="btn btn-success pull-right export">Export</button>
+        <form name="import_data" class="form-inline pull-right" method="POST">
+          <label for="file" class="sr-only">File</label>
+          <input type="file" name="file" id="file" class="form-control">
+          <button type="submit" class="btn btn-secondary">Import</button>
+        </form>
       </div>
     </div>
     <div class="row">
@@ -137,7 +143,7 @@
       <tbody>
         {{#each albums}}
           <tr id="{{spotifyId}}" class="album_row">
-            <td></td>
+            <td>{{artwork}}</td>
             <td>{{rating}}</td>
             <td>{{artist}}</a></td>
             <td><a href="{{href}}" target="_blank">{{album}}</a></td>
