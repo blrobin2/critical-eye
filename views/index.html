@@ -65,6 +65,8 @@
         <div id="search_results" class="search-results"></div>
 
         <form id="add_listened" class="form">
+          <input type="hidden" name="albumId" id="albumId">
+
           <div class="form-group">
             <label for="artist">Artist</label>
             <input type="text" placeholder="Artist" id="artist" name="artist" class="form-control" required>
@@ -138,6 +140,7 @@
           <th>Artist</th>
           <th>Album</th>
           <th>Date Listened</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -148,6 +151,12 @@
             <td>{{artist}}</a></td>
             <td><a href="{{href}}" target="_blank">{{album}}</a></td>
             <td>{{dateListened}}</td>
+            <td>
+              <div class="btn-group btn-group-xs" role="group" aria-label="...">
+                <button type="button" id="edit-{{id}}" data-id="{{id}}" class="btn btn-primary edit-album">Edit</button>
+                <button type="button" id="delete-{{id}}" data-id="{{id}}" class="btn btn-danger delete-album">Delete</button>
+              </div>
+            </td>
           </tr>
         {{/each}}
       </tbody>
@@ -178,14 +187,22 @@
       console.error(`Open failed: ${e}`);
     });
 
-    get_albums().then(() => {
-      $('#listened-table').DataTable({
-        columnDefs: [
-          { orderable: false, targets: 0 }
-        ],
-        order: [[1, 'desc']]
+    drawAlbums()
+
+    function drawAlbums() {
+      get_albums().then(() => {
+        $('#listened-table').DataTable({
+          columnDefs: [
+            { orderable: false, targets: 0 }
+          ],
+          order: [[1, 'desc']],
+          drawCallback(settings) {
+            addEditAndDeleteAlbumListeners()
+          }
+        });
       });
-    });
+    }
+
 
     document.getElementById('export').addEventListener('click', async () => {
       const file = await export_stuff(db)
@@ -254,9 +271,6 @@
       return new Date(date).toDateString();
     }
 
-    // Set Date Listened default
-    document.getElementById('dateListened').value = new Date().toISOString().slice(0,-8);
-
     // Search for albums
     const search_album = document.getElementById('search_album');
     search_album.addEventListener('submit', async e => {
@@ -264,6 +278,11 @@
       const query          = e.target.q.value;
       const search_json    = await fetch(`/search?q=${query}`);
       const search_results = await search_json.json();
+
+      if (search_results.message) {
+        alert(search_results.message)
+        return
+      }
 
       const formatted = search_results.albums.items.map(album => ({
         spotifyId: album.id,
@@ -281,11 +300,13 @@
         button.addEventListener('click', e => {
           const album = e.target.closest('.result');
 
-          add_listened.artist.value = album.dataset.artist;
-          add_listened.album.value = album.dataset.album;
-          add_listened.spotifyId.value = album.dataset.spotifyId;
-          add_listened.artwork.value = album.dataset.artwork;
-          add_listened.href.value = album.dataset.href;
+          populateCreateEditForm(album.dataset)
+
+          //add_listened.artist.value = album.dataset.artist;
+          //add_listened.album.value = album.dataset.album;
+          //add_listened.spotifyId.value = album.dataset.spotifyId;
+          //add_listened.artwork.value = album.dataset.artwork;
+          //add_listened.href.value = album.dataset.href;
           // Clear out search results
           search_container.innerHTML = '';
         });
@@ -300,10 +321,77 @@
       for (let [key, value] of album_data.entries()) {
         album[key] = value;
       }
-      db.albums.add(album).then(() => {
-        window.location.reload();
-      });
+
+      if (album.albumId !== '') {
+        db.albums.update(+album.albumId, album).then(() => {
+          window.location.reload();
+        })
+      } else {
+        db.albums.add(album).then(() => {
+          window.location.reload();
+        });
+      }
     });
+
+    function populateCreateEditForm({
+      artist,
+      album,
+      spotifyId,
+      artwork,
+      href,
+      dateListened = new Date().toISOString().slice(0, -8),
+      description = null,
+      rating = 2.5,
+      id = null
+    }) {
+      add_listened.reset()
+      add_listened.artist.value = artist;
+      add_listened.album.value = album;
+      add_listened.spotifyId.value = spotifyId;
+      add_listened.artwork.value = artwork;
+      add_listened.href.value = href;
+
+      if (dateListened) {
+        add_listened.dateListened.value = dateListened
+      }
+      if (description) {
+        add_listened.description.value = description
+      }
+      if (rating) {
+        add_listened.rating.value = +rating
+      }
+      if (id) {
+        add_listened.albumId.value = +id
+      }
+    }
+
+    function findAlbumById(id) {
+      return db.albums.get(id)
+    }
+
+    function addEditAndDeleteAlbumListeners() {
+      // Edit
+      const editButtons = document.querySelectorAll('.edit-album').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const albumId = +e.target.dataset.id
+          findAlbumById(albumId).then(album => {
+            populateCreateEditForm(album)
+          })
+        })
+      })
+
+      // Delete
+      const deleteButtons = document.querySelectorAll('.delete-album').forEach(btn => {
+        btn.addEventListener('click', e => {
+          if(confirm('Are you sure you wish to delete this album? This action cannot be undone')) {
+              const albumId = (+e.target.dataset.id)
+              return db.albums.delete(albumId).then(() => {
+                window.location.reload();
+              })
+          }
+        })
+      })
+    }
   </script>
 </body>
 </html>

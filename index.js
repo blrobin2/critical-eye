@@ -28,7 +28,7 @@ app.get('/', function (req, res) {
 
 app.get('/search', (req, res) => {
   if (! access_token) {
-    res.send('Please wait for authentication')
+    res.json({message: 'Please wait for authentication. If the page has been sitting awhile, try refreshing the page'})
     return
   }
 
