@@ -147,7 +147,14 @@
         {{#each albums}}
           <tr id="{{spotifyId}}" class="album_row">
             <td><img src="{{artwork}}" alt="{{artist}}: {{album}}" class="artwork"></td>
-            <td>{{rating}}</td>
+            <td>
+              <a
+                href="javascript:void(0)"
+                data-toggle="tooltip"
+                data-placement="right"
+                title="{{description}}"
+              >{{rating}}</a>
+            </td>
             <td>{{artist}}</a></td>
             <td><a href="{{href}}" target="_blank">{{album}}</a></td>
             <td>{{dateListened}}</td>
@@ -165,6 +172,8 @@
   <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min.js"></script>
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
   <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
   <script>
@@ -198,11 +207,11 @@
           order: [[1, 'desc']],
           drawCallback(settings) {
             addEditAndDeleteAlbumListeners()
+            $('[data-toggle="tooltip"]').tooltip()
           }
         });
       });
     }
-
 
     document.getElementById('export').addEventListener('click', async () => {
       const file = await export_stuff(db)
