@@ -98,6 +98,11 @@
           </div>
 
           <div class="form-group">
+            <label for="yearReleased">Year Released</label>
+            <input type="number" min="1900" step="1" id="yearReleased" name="yearReleased" class="form-control">
+          </div>
+
+          <div class="form-group">
             <label for="rating">Rating</label>
             <input type="number" min="0" max="5" step="0.5" placeholder="2.5" id="rating" name="rating" class="form-control" required>
           </div>
@@ -140,6 +145,7 @@
           <th>Artist</th>
           <th>Album</th>
           <th>Date Listened</th>
+          <th>Year Released</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -162,6 +168,7 @@
             <td>{{artist}}</a></td>
             <td><a href="{{href}}" target="_blank">{{album}}</a></td>
             <td>{{dateListened}}</td>
+            <td>{{yearReleased}}</td>
             <td>
               <div class="btn-group btn-group-xs" role="group" aria-label="...">
                 <button type="button" id="edit-{{id}}" data-id="{{id}}" class="btn btn-primary edit-album">Edit</button>
@@ -193,7 +200,7 @@
 
     const db = new Dexie("albums_listened");
     db.version(1).stores({
-      albums: '++id, rating, &spotifyId, dateListened, artwork, album, artist, href, description'
+      albums: '++id, rating, &spotifyId, dateListened, artwork, album, artist, href, description, yearReleased'
     });
 
     db.open().catch(e => {
@@ -281,7 +288,14 @@
     }
 
     function human_date(date) {
-      return new Date(date).toDateString();
+      //return new Date(date).toDateString();
+      const dateObj = new Date(date);
+      // month is 0-11, for no good reason
+      const month = dateObj.getUTCMonth() + 1;
+      const day = dateObj.getUTCDate();
+      const year = dateObj.getUTCFullYear();
+
+      return year + "/" + month + "/" + day;
     }
 
     // Search for albums
@@ -310,10 +324,13 @@
       // When review is clicked, fill out form data.
       const review_buttons = document.querySelectorAll('.review_button');
       Array.from(review_buttons).forEach(button => {
-        button.addEventListener('click', e => {
+        button.addEventListener('click', async e => {
           const album = e.target.closest('.result');
 
-          populateCreateEditForm(album.dataset)
+          const yearReleased = await getAlbumReleaseYear(album.dataset.spotifyId);
+          album.dataset.yearReleased = yearReleased;
+
+          populateCreateEditForm(album.dataset);
 
           //add_listened.artist.value = album.dataset.artist;
           //add_listened.album.value = album.dataset.album;
@@ -346,6 +363,19 @@
       }
     });
 
+    async function getAlbumReleaseYear(spotifyId) {
+      const album_json = await fetch(`/album/${spotifyId}`);
+      const response = await album_json.json();
+
+      if (response.message) {
+        alert(response.message)
+        return
+      }
+
+      const [releaseYear] = response.album.release_date.split('-');
+      return releaseYear;
+    }
+
     function populateCreateEditForm({
       artist,
       album,
@@ -353,6 +383,7 @@
       artwork,
       href,
       dateListened = new Date().toISOString().slice(0, -8),
+      yearReleased = new Date().getFullYear(),
       description = null,
       rating = 2.5,
       id = null
@@ -363,6 +394,10 @@
       add_listened.spotifyId.value = spotifyId;
       add_listened.artwork.value = artwork;
       add_listened.href.value = href;
+
+      if (yearReleased) {
+        add_listened.yearReleased.value = yearReleased;
+      }
 
       if (dateListened) {
         add_listened.dateListened.value = dateListened

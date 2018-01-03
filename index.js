@@ -20,6 +20,7 @@ app.get('/', function (req, res) {
   .then(data => {
     spotifyApi.setAccessToken(data.body.access_token)
     access_token = data.body.access_token
+    console.log('TOKEN GRANTED');
     res.sendFile('views/index.html', {root: __dirname})
   }, err => {
     console.error(err)
@@ -37,6 +38,17 @@ app.get('/search', (req, res) => {
   }, err => {
     console.error(err)
   })
+})
+
+app.get('/album/:spotifyId', (req, res) => {
+  if (! access_token) {
+    res.json({message: 'Please wait for authentication. If the page has been sitting awhile, try refreshing the page'})
+    return
+  }
+
+  spotifyApi.getAlbum(req.params.spotifyId).then(album => {
+    res.json({ album: album.body })
+  }, console.error)
 })
 
 app.listen(process.env.PORT || 8080)
