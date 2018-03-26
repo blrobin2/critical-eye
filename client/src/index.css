@@ -1,0 +1,41 @@
+:required {
+  border-color: red;
+}
+:required:valid {
+  border-color: green;
+}
+.search-results {
+  padding-left: 0;
+}
+.result {
+  list-style: none;
+  background: #eee;
+  padding: 0.5em;
+  margin: .5em 0;
+  border-radius: .5em;
+}
+
+.result:nth-child(even) {
+  background: #ccc;
+}
+.artwork {
+  max-width: 64px;
+}
+.import-export {
+  margin-top: 20px;
+}
+.export {
+  margin-left: 1em;
+}
+
+[for="num-entries"] {
+  margin-top: .5rem;
+}
+
+.search-form {
+  float: right;
+}
+
+.sortable-table-header {
+  cursor: pointer;
+}

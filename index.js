@@ -12,7 +12,7 @@ const spotifyApi = new SpotifyWebApi({
 let access_token = ''
 
 app.use(express.static('public'))
-//app.use(express.static('views'))
+app.use(express.static(__dirname + '/client/build'))
 
 app.get('/', function (req, res) {
   spotifyApi
@@ -21,34 +21,26 @@ app.get('/', function (req, res) {
     spotifyApi.setAccessToken(data.body.access_token)
     access_token = data.body.access_token
     console.log('TOKEN GRANTED');
-    res.sendFile('views/index.html', {root: __dirname})
+    res.sendFile('client/build/index.html', {root: __dirname})
   }, err => {
     console.error(err)
   })
 })
 
-app.get('/search', (req, res) => {
-  if (! access_token) {
-    res.json({message: 'Please wait for authentication. If the page has been sitting awhile, try refreshing the page'})
-    return
-  }
+app.get('/search', async (req, res) => {
+  const access = await spotifyApi.clientCredentialsGrant();
+  await spotifyApi.setAccessToken(access.body.access_token);
 
-  spotifyApi.searchAlbums(req.query.q).then(albums => {
-    res.json({albums: albums.body.albums})
-  }, err => {
-    console.error(err)
-  })
-})
+  const albums = await spotifyApi.searchAlbums(req.query.q);
+  res.json({ albums: albums.body.albums });
+});
 
-app.get('/album/:spotifyId', (req, res) => {
-  if (! access_token) {
-    res.json({message: 'Please wait for authentication. If the page has been sitting awhile, try refreshing the page'})
-    return
-  }
+app.get('/album/:spotifyId', async (req, res) => {
+  const access = await spotifyApi.clientCredentialsGrant();
+  await spotifyApi.setAccessToken(access.body.access_token);
 
-  spotifyApi.getAlbum(req.params.spotifyId).then(album => {
-    res.json({ album: album.body })
-  }, console.error)
-})
+  const album = await spotifyApi.getAlbum(req.params.spotifyId);
+  res.json({ album: album.body });
+});
 
-app.listen(process.env.PORT || 8080)
+app.listen(process.env.PORT || 8080);
