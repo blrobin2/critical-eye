@@ -1,29 +1,18 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 
-import {
-  albumSearch,
-  getAlbumReleaseYear
-} from './api';
+import { albumSearch, getAlbumReleaseYear } from "./api";
 
-import {
-  getAlbums,
-  addAlbum,
-  updateAlbum,
-  deleteAlbum,
-  getLastId
-} from "./db";
+import { getAlbums, addAlbum, updateAlbum, deleteAlbum, getLastId } from "./db";
 
-import {
-  numberToStars,
-  humanDate,
-  urlToImage
-} from "./util";
+import { numberToStars, humanDate, urlToImage } from "./util";
 
-import AlbumSearch from './AlbumSearch';
-import AlbumEditForm from './AlbumEditForm';
-import ButtonGroup from './ButtonGroup';
-import Button from './Button';
+import AlbumSearch from "./AlbumSearch";
+import AlbumEditForm from "./AlbumEditForm";
+import YearInput from "./YearInput";
+import RatingInput from "./RatingInput";
+import ButtonGroup from "./ButtonGroup";
+import Button from "./Button";
 
 export default class AlbumTable extends Component {
   constructor(props) {
@@ -63,7 +52,7 @@ export default class AlbumTable extends Component {
     };
 
     this.cellEditProps = {
-      mode: "click",
+      mode: "dbclick",
       blurToSave: true,
       beforeSaveCell: this.saveCell
     };
@@ -97,40 +86,34 @@ export default class AlbumTable extends Component {
     };
   }
 
-  addSpotifySearchToModal = (onClose, onSave) => {
-    return (
-      <AlbumSearch
-        albums={this.state.albumSearch}
-        onSearch={this.handleAlbumSearch}
-        onReview={this.selectAlbumToReview}
-      />
-    );
-  };
+  addSpotifySearchToModal = (onClose, onSave) => (
+    <AlbumSearch
+      albums={this.state.albumSearch}
+      onSearch={this.handleAlbumSearch}
+      onReview={this.selectAlbumToReview}
+    />
+  );
 
-  addAlbumForm = (onClose, onSave) => {
-    return <AlbumEditForm onSave={onSave} {...this.state.currentAlbum} />;
-  };
+  addAlbumForm = (onClose, onSave) => (
+    <AlbumEditForm onSave={onSave} {...this.state.currentAlbum} />
+  );
 
-  getInsertButton = onClick => {
-    return (
-      <Button button-style="info" onClick={onClick}>
-        Add Album
+  getInsertButton = onClick => (
+    <Button button-style="info" onClick={onClick}>
+      Add Album
+    </Button>
+  );
+
+  createButtonGroup = props => (
+    <ButtonGroup size="sm">
+      {props.exportCSVBtn}
+      {props.insertBtn}
+      {props.deleteBtn}
+      <Button type="button" button-style="primary" onClick={this.clearSort}>
+        Clear Sort
       </Button>
-    );
-  };
-
-  createButtonGroup = props => {
-    return (
-      <ButtonGroup size="sm">
-        {props.exportCSVBtn}
-        {props.insertBtn}
-        {props.deleteBtn}
-        <Button type="button" button-style="primary" onClick={this.clearSort}>
-          Clear Sort
-        </Button>
-      </ButtonGroup>
-    );
-  };
+    </ButtonGroup>
+  );
 
   handleAfterInsertRow = album => {
     addAlbum(album).then(() => {
@@ -185,6 +168,17 @@ export default class AlbumTable extends Component {
     }
   };
 
+  getYearInput = (column, attrs) => (
+    <YearInput
+      name="yearReleased"
+      label="Year Released"
+      sronly="true"
+      {...attrs}
+    />
+  );
+
+  getRatingInput = (column, attrs) => <RatingInput sronly="true" {...attrs} />;
+
   render() {
     return (
       <BootstrapTable
@@ -214,6 +208,7 @@ export default class AlbumTable extends Component {
           dataFormat={numberToStars}
           dataSort={true}
           caretRender={this.getCaret}
+          customEditor={{ getElement: this.getRatingInput }}
         >
           Rating
         </TableHeaderColumn>
@@ -236,6 +231,7 @@ export default class AlbumTable extends Component {
           dataFormat={humanDate}
           dataSort={true}
           caretRender={this.getCaret}
+          editable={{ type: "datetime-local" }}
         >
           Date Listened
         </TableHeaderColumn>
@@ -243,10 +239,14 @@ export default class AlbumTable extends Component {
           dataField="yearReleased"
           dataSort={true}
           caretRender={this.getCaret}
+          customEditor={{ getElement: this.getYearInput }}
         >
           Year Released
         </TableHeaderColumn>
-        <TableHeaderColumn dataField="description" hidden>
+        <TableHeaderColumn
+          dataField="description"
+          editable={{ type: "textarea" }}
+        >
           Description
         </TableHeaderColumn>
       </BootstrapTable>

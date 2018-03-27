@@ -2,6 +2,8 @@ import React, { Component } from "react";
 
 import Form from "./Form";
 import FormInput from "./FormInput";
+import YearInput from "./YearInput";
+import RatingInput from "./RatingInput";
 import FormTextarea from "./FormTextarea";
 
 import { getDatetimeLocal, getCurrentYear } from "./util";
@@ -93,24 +95,13 @@ export default class AlbumEditForm extends Component {
           required={true}
           onChange={this.handleChange}
         />
-        <FormInput
-          type="number"
+        <YearInput
           name="yearReleased"
           label="Year Released"
-          placeholder="2018"
-          min="1900"
-          step="1"
           value={this.state.yearReleased}
           onChange={this.handleChange}
         />
-        <FormInput
-          type="number"
-          name="rating"
-          label="Rating"
-          placeholder="2.5"
-          min="0"
-          max="5"
-          step="0.5"
+        <RatingInput
           value={this.state.rating}
           onChange={this.handleChange}
         />
