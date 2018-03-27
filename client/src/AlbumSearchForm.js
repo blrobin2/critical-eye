@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import Form from './Form';
-import FormInput from './FormInput';
-import Button from './Button';
+import Form from "./Form";
+import FormInput from "./FormInput";
+import Button from "./Button";
 
 export default class AlbumSearchForm extends Component {
   constructor(props) {

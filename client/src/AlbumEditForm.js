@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import Form from './Form';
-import FormInput from './FormInput';
-import FormTextarea from './FormTextarea';
+import Form from "./Form";
+import FormInput from "./FormInput";
+import FormTextarea from "./FormTextarea";
+
+import { getDatetimeLocal, getCurrentYear } from "./util";
 
 export default class AlbumEditForm extends Component {
   constructor(props) {
@@ -17,12 +19,13 @@ export default class AlbumEditForm extends Component {
     spotifyId: props.spotifyId || "",
     artwork: props.artwork || "",
     href: props.href || "",
-    dateListened: props.dateListened || new Date().toISOString().slice(0, -8),
-    yearReleased: props.yearReleased || new Date().getFullYear(),
+    dateListened: props.dateListened || getDatetimeLocal(),
+    yearReleased: props.yearReleased || getCurrentYear(),
     rating: props.rating || 2.5,
     description: props.description || ""
   });
 
+  // Ensures that when we set current album above, this form updates
   componentWillReceiveProps(nextProps) {
     this.setState(this.getInitialState(nextProps));
   }

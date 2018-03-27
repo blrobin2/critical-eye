@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import * as classNames from "classnames";
 
 export default class LinkButton extends Component {

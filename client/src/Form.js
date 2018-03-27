@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import * as classNames from "classnames";
 
 export default function Form(props) {
@@ -11,7 +11,5 @@ export default function Form(props) {
       formClasses[clazz] = true;
     });
   }
-  return (
-    <form className={classNames(formClasses)}>{props.children}</form>
-  );
+  return <form className={classNames(formClasses)}>{props.children}</form>;
 }

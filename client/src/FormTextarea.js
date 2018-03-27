@@ -1,11 +1,6 @@
 import React from "react";
 
-export default function FormTextarea ({
-  name,
-  label,
-  value,
-  onChange
-}) {
+export default function FormTextarea({ name, label, value, onChange }) {
   return (
     <div className="form-group">
       <label htmlFor={name}>{label}</label>

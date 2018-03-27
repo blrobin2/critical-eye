@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import AlbumTable from './AlbumTable';
+import AlbumTable from "./AlbumTable";
 
 class App extends Component {
   render() {
@@ -10,9 +10,7 @@ class App extends Component {
           <div className="col-sm-6">
             <h1>Critical Eye</h1>
           </div>
-          <div className="col-sm-6">
-            {/* Import/Export */}
-          </div>
+          <div className="col-sm-6">{/* Import/Export */}</div>
         </div>
         <div className="row">
           <div className="col-sm-12">
@@ -23,7 +21,5 @@ class App extends Component {
     );
   }
 }
-
-
 
 export default App;

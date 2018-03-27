@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import AlbumSearchResultItem from './AlbumSearchResultItem';
+import AlbumSearchResultItem from "./AlbumSearchResultItem";
 
 export default function AlbumSearchResults(props) {
   return (

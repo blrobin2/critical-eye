@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
-import ButtonGroup from './ButtonGroup';
-import LinkButton from './LinkButton';
-import Button from './Button';
+import ButtonGroup from "./ButtonGroup";
+import LinkButton from "./LinkButton";
+import Button from "./Button";
 
 export default function AlbumSearchResultItem(props) {
   return (
@@ -11,7 +11,7 @@ export default function AlbumSearchResultItem(props) {
         src={props.artwork}
         alt={`${props.artist}: ${props.album}`}
         width={props.artworkWidth}
-      />{" "}
+      />
       {props.artist}: {props.album}
       <ButtonGroup size="sm" alignment="right">
         <LinkButton size="sm" button-style="success" href={props.href}>

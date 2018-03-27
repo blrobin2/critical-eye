@@ -1,5 +1,4 @@
-import Dexie from 'dexie';
-
+import Dexie from "dexie";
 
 const db = new Dexie("albums_listened");
 db.version(1).stores({
@@ -12,7 +11,10 @@ db.open().catch(e => {
 });
 
 export async function getAlbums() {
-  return await db.albums.orderBy('rating').desc().toArray();
+  return await db.albums
+    .orderBy("rating")
+    .desc()
+    .toArray();
 }
 
 export async function addAlbum(album) {
@@ -31,6 +33,5 @@ export async function getLastId() {
 export async function deleteAlbum(albumId) {
   return await db.albums.delete(albumId);
 }
-
 
 export default db;

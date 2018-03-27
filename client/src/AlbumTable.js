@@ -14,6 +14,12 @@ import {
   getLastId
 } from "./db";
 
+import {
+  numberToStars,
+  humanDate,
+  urlToImage
+} from "./util";
+
 import AlbumSearch from './AlbumSearch';
 import AlbumEditForm from './AlbumEditForm';
 import ButtonGroup from './ButtonGroup';
@@ -156,45 +162,15 @@ export default class AlbumTable extends Component {
   }
 
   async selectAlbumToReview(album) {
-    const yearReleased = await getAlbumReleaseYear(album.spotifyId);
-    const lastId = await getLastId();
+    const [yearReleased, lastId] = await Promise.all([
+      getAlbumReleaseYear(album.spotifyId),
+      getLastId()
+    ]);
     this.setState({
       currentAlbum: Object.assign({}, album, { id: lastId + 1, yearReleased }),
       albumSearch: []
     });
   }
-
-  numberToStars = num => {
-    const wholes = Math.floor(num);
-    const remainder = (num % 1).toString().split(".")[1];
-    let rating = "★".repeat(wholes);
-    if (remainder) {
-      rating += "." + remainder;
-    }
-
-    return rating;
-  };
-
-  urlToImage = (url, album) => {
-    return (
-      <img
-        className="artwork"
-        src={url}
-        alt={`${album.artist}: ${album.album}`}
-      />
-    );
-  };
-
-  humanDate = date => {
-    //return new Date(date).toDateString();
-    const dateObj = new Date(date);
-    // month is 0-11, for no good reason
-    const month = dateObj.getUTCMonth() + 1;
-    const day = dateObj.getUTCDate();
-    const year = dateObj.getUTCFullYear();
-
-    return year + "/" + month + "/" + day;
-  };
 
   getCaret = direction => {
     const upArrow = " \u25B4 ";
@@ -230,12 +206,12 @@ export default class AlbumTable extends Component {
         <TableHeaderColumn hidden dataField="spotifyId">
           Spotify ID
         </TableHeaderColumn>
-        <TableHeaderColumn dataField="artwork" dataFormat={this.urlToImage}>
+        <TableHeaderColumn dataField="artwork" dataFormat={urlToImage}>
           Artwork
         </TableHeaderColumn>
         <TableHeaderColumn
           dataField="rating"
-          dataFormat={this.numberToStars}
+          dataFormat={numberToStars}
           dataSort={true}
           caretRender={this.getCaret}
         >
@@ -257,7 +233,7 @@ export default class AlbumTable extends Component {
         </TableHeaderColumn>
         <TableHeaderColumn
           dataField="dateListened"
-          dataFormat={this.humanDate}
+          dataFormat={humanDate}
           dataSort={true}
           caretRender={this.getCaret}
         >
