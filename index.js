@@ -9,8 +9,10 @@ const spotifyApi = new SpotifyWebApi({
   clientSecret: process.env.SPOTIFY_CLIENT_SECRET
 });
 
-app.use(express.static("public"));
-app.use(express.static(__dirname + "/client/build"));
+app.use(
+  "/static",
+  express.static(path.join(__dirname, "client", "build", "static"))
+);
 
 app.get("/", function(req, res) {
   res.sendFile("client/build/index.html", { root: __dirname });

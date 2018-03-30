@@ -11,6 +11,7 @@
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "cd client && yarn start",
+    "postinstall": "cd client && yarn build",
     "server": "npm start",
     "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
   },
