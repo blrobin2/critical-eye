@@ -93,7 +93,9 @@ export default class AlbumTable extends Component {
   );
 
   getAlbumEditForm = (onClose, onSave) => (
-    <AlbumEditForm onSave={onSave} {...this.state.currentAlbum} />
+    <div className="modal-body">
+      <AlbumEditForm onSave={onSave} {...this.state.currentAlbum} />
+    </div>
   );
 
   getYearInput = (column, attrs) => (
