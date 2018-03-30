@@ -9,7 +9,8 @@ A music album listening and review tracker, localized entirely within your compu
 * [Create React App](https://github.com/facebook/create-react-app) - The baseline for React build
 * [React Boostrap Table](http://allenfang.github.io/react-bootstrap-table/) - The real meat of the app that controls all the CRUD
 * [Spotify Web API](https://developer.spotify.com/web-api/) - For getting album details
-* [LocalStorage](https://developer.mozilla.org/en-US/docs/Web/API/Storage/LocalStorage) - For storing your reviews
+* [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) - For storing your reviews
+* [Dexie](http://dexie.org/) - For making working with IndexedDB way easier
 * [Heroku](https://heroku.com) - Where I host the app
 
 ## Author
