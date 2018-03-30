@@ -29,7 +29,6 @@
   "dependencies": {
     "dotenv": "^5.0.1",
     "express": "^4.15.3",
-    "pug": "^2.0.0-rc.1",
     "spotify-web-api-node": "^2.4.0"
   },
   "devDependencies": {
