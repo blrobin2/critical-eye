@@ -11,5 +11,12 @@ export default function Form(props) {
       formClasses[clazz] = true;
     });
   }
-  return <form className={classNames(formClasses)}>{props.children}</form>;
+  return (
+    <form
+      className={classNames(formClasses)}
+      onSubmit={e => e.preventDefault()}
+    >
+      {props.children}
+    </form>
+  );
 }

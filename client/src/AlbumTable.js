@@ -2,9 +2,7 @@ import React, { Component } from "react";
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 
 import { albumSearch, getAlbumReleaseYear } from "./api";
-
 import { getAlbums, addAlbum, updateAlbum, deleteAlbum, getLastId } from "./db";
-
 import { numberToStars, humanDate, urlToImage } from "./util";
 
 import AlbumSearch from "./AlbumSearch";
@@ -20,18 +18,7 @@ export default class AlbumTable extends Component {
 
     this.state = {
       albums: [],
-      currentAlbum: {
-        id: null,
-        spotifyId: null,
-        artist: null,
-        album: null,
-        artwork: null,
-        href: null,
-        rating: null,
-        dateListened: null,
-        yearReleased: null,
-        description: null
-      },
+      currentAlbum: this.defaultCurrentAlbum(),
       albumSearch: [],
       sortName: [],
       sortOrder: []
@@ -43,10 +30,10 @@ export default class AlbumTable extends Component {
       sortName: this.state.sortName,
       sortOrder: this.state.sortOrder,
       clearSearch: true,
-      btnGroup: this.createButtonGroup,
+      btnGroup: this.getButtonGroup,
       insertBtn: this.getInsertButton,
       insertModalHeader: this.addSpotifySearchToModal,
-      insertModalBody: this.addAlbumForm,
+      insertModalBody: this.getAlbumEditForm,
       afterInsertRow: this.handleAfterInsertRow,
       afterDeleteRow: this.handleAfterDeleteRow
     };
@@ -60,10 +47,6 @@ export default class AlbumTable extends Component {
     this.selectRowProps = {
       mode: "checkbox"
     };
-
-    this.defaultCurrentAlbum = this.defaultCurrentAlbum.bind(this);
-    this.handleAlbumSearch = this.handleAlbumSearch.bind(this);
-    this.selectAlbumToReview = this.selectAlbumToReview.bind(this);
   }
 
   async componentWillMount() {
@@ -71,40 +54,20 @@ export default class AlbumTable extends Component {
     this.setState({ albums });
   }
 
-  defaultCurrentAlbum() {
-    return {
-      id: null,
-      spotifyId: null,
-      artist: null,
-      album: null,
-      artwork: null,
-      href: null,
-      rating: null,
-      dateListened: null,
-      yearReleased: null,
-      description: null
-    };
-  }
+  defaultCurrentAlbum = () => ({
+    id: null,
+    spotifyId: null,
+    artist: null,
+    album: null,
+    artwork: null,
+    href: null,
+    rating: null,
+    dateListened: null,
+    yearReleased: null,
+    description: null
+  });
 
-  addSpotifySearchToModal = (onClose, onSave) => (
-    <AlbumSearch
-      albums={this.state.albumSearch}
-      onSearch={this.handleAlbumSearch}
-      onReview={this.selectAlbumToReview}
-    />
-  );
-
-  addAlbumForm = (onClose, onSave) => (
-    <AlbumEditForm onSave={onSave} {...this.state.currentAlbum} />
-  );
-
-  getInsertButton = onClick => (
-    <Button button-style="info" onClick={onClick}>
-      Add Album
-    </Button>
-  );
-
-  createButtonGroup = props => (
+  getButtonGroup = props => (
     <ButtonGroup size="sm">
       {props.exportCSVBtn}
       {props.insertBtn}
@@ -115,13 +78,57 @@ export default class AlbumTable extends Component {
     </ButtonGroup>
   );
 
-  handleAfterInsertRow = album => {
-    addAlbum(album).then(() => {
-      this.setState(prevState => ({
-        albums: prevState.albums.concat(album),
-        currentAlbum: this.defaultCurrentAlbum()
-      }));
+  getInsertButton = onClick => (
+    <Button button-style="info" onClick={onClick}>
+      Add Album
+    </Button>
+  );
+
+  addSpotifySearchToModal = () => (
+    <AlbumSearch
+      albums={this.state.albumSearch}
+      onSearch={this.handleAlbumSearch}
+      onReview={this.selectAlbumToReview}
+    />
+  );
+
+  getAlbumEditForm = (onClose, onSave) => (
+    <AlbumEditForm onSave={onSave} {...this.state.currentAlbum} />
+  );
+
+  getYearInput = (column, attrs) => (
+    <YearInput
+      name="yearReleased"
+      label="Year Released"
+      sronly="true"
+      {...attrs}
+    />
+  );
+
+  getRatingInput = (column, attrs) => <RatingInput sronly="true" {...attrs} />;
+
+  handleAlbumSearch = async (query) => {
+    const albums = await albumSearch(query);
+    this.setState({ albumSearch: albums });
+  };
+
+  selectAlbumToReview = async (album) => {
+    const [yearReleased, lastId] = await Promise.all([
+      getAlbumReleaseYear(album.spotifyId),
+      getLastId()
+    ]);
+    this.setState({
+      currentAlbum: Object.assign({}, album, { id: lastId + 1, yearReleased }),
+      albumSearch: []
     });
+  };
+
+  handleAfterInsertRow = async (album) => {
+    await addAlbum(album);
+    this.setState(prevState => ({
+      albums: prevState.albums.concat(album),
+      currentAlbum: this.defaultCurrentAlbum()
+    }));
   };
 
   saveCell = (album, field, value) => {
@@ -139,22 +146,6 @@ export default class AlbumTable extends Component {
     });
   };
 
-  async handleAlbumSearch(query) {
-    const albums = await albumSearch(query);
-    this.setState({ albumSearch: albums });
-  }
-
-  async selectAlbumToReview(album) {
-    const [yearReleased, lastId] = await Promise.all([
-      getAlbumReleaseYear(album.spotifyId),
-      getLastId()
-    ]);
-    this.setState({
-      currentAlbum: Object.assign({}, album, { id: lastId + 1, yearReleased }),
-      albumSearch: []
-    });
-  }
-
   getCaret = direction => {
     const upArrow = " \u25B4 ";
     const downArrow = " \u25BE ";
@@ -167,17 +158,6 @@ export default class AlbumTable extends Component {
         return `${upArrow}/${downArrow}`;
     }
   };
-
-  getYearInput = (column, attrs) => (
-    <YearInput
-      name="yearReleased"
-      label="Year Released"
-      sronly="true"
-      {...attrs}
-    />
-  );
-
-  getRatingInput = (column, attrs) => <RatingInput sronly="true" {...attrs} />;
 
   render() {
     return (

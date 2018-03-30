@@ -7,10 +7,9 @@ class App extends Component {
     return (
       <div className="container-fluid">
         <div className="row">
-          <div className="col-sm-6">
+          <div className="col-sm-12">
             <h1>Critical Eye</h1>
           </div>
-          <div className="col-sm-6">{/* Import/Export */}</div>
         </div>
         <div className="row">
           <div className="col-sm-12">
