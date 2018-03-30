@@ -6,7 +6,7 @@ import { getAlbums, addAlbum, updateAlbum, deleteAlbum, getLastId } from "./db";
 import { numberToStars, humanDate, urlToImage } from "./util";
 
 import AlbumSearch from "./AlbumSearch";
-import AlbumEditForm from "./AlbumEditForm";
+import CustomModalBody from "./CustomModalBody";
 import YearInput from "./YearInput";
 import RatingInput from "./RatingInput";
 import ButtonGroup from "./ButtonGroup";
@@ -33,7 +33,7 @@ export default class AlbumTable extends Component {
       btnGroup: this.getButtonGroup,
       insertBtn: this.getInsertButton,
       insertModalHeader: this.addSpotifySearchToModal,
-      insertModalBody: this.getAlbumEditForm,
+      insertModalBody: this.getCustomModalBody,
       afterInsertRow: this.handleAfterInsertRow,
       afterDeleteRow: this.handleAfterDeleteRow
     };
@@ -92,10 +92,8 @@ export default class AlbumTable extends Component {
     />
   );
 
-  getAlbumEditForm = (onClose, onSave) => (
-    <div className="modal-body">
-      <AlbumEditForm onSave={onSave} {...this.state.currentAlbum} />
-    </div>
+  getCustomModalBody = (onClose, onSave) => (
+      <CustomModalBody onSave={onSave} {...this.state.currentAlbum} />
   );
 
   getYearInput = (column, attrs) => (
