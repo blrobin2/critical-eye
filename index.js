@@ -1,33 +1,22 @@
-const path    = require('path')
-const express = require('express')
-const app     = express()
-const SpotifyWebApi = require('spotify-web-api-node')
-const config  = require('config')
+require("dotenv").config();
+const path = require("path");
+const express = require("express");
+const app = express();
+const SpotifyWebApi = require("spotify-web-api-node");
 
 const spotifyApi = new SpotifyWebApi({
-  clientId: config.get('spotifyClientId'),
-  clientSecret: config.get('spotifyClientSecret')
-})
+  clientId: process.env.SPOTIFY_CLIENT_ID,
+  clientSecret: process.env.SPOTIFY_CLIENT_SECRET
+});
 
-let access_token = ''
+app.use(express.static("public"));
+app.use(express.static(__dirname + "/client/build"));
 
-app.use(express.static('public'))
-app.use(express.static(__dirname + '/client/build'))
+app.get("/", function(req, res) {
+  res.sendFile("client/build/index.html", { root: __dirname });
+});
 
-app.get('/', function (req, res) {
-  spotifyApi
-  .clientCredentialsGrant()
-  .then(data => {
-    spotifyApi.setAccessToken(data.body.access_token)
-    access_token = data.body.access_token
-    console.log('TOKEN GRANTED');
-    res.sendFile('client/build/index.html', {root: __dirname})
-  }, err => {
-    console.error(err)
-  })
-})
-
-app.get('/search', async (req, res) => {
+app.get("/search", async (req, res) => {
   const access = await spotifyApi.clientCredentialsGrant();
   await spotifyApi.setAccessToken(access.body.access_token);
 
@@ -35,7 +24,7 @@ app.get('/search', async (req, res) => {
   res.json({ albums: albums.body.albums });
 });
 
-app.get('/album/:spotifyId', async (req, res) => {
+app.get("/album/:spotifyId", async (req, res) => {
   const access = await spotifyApi.clientCredentialsGrant();
   await spotifyApi.setAccessToken(access.body.access_token);
 
