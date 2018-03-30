@@ -11,9 +11,9 @@
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "cd client && yarn start",
-    "postinstall": "cd client && npm install && npm run build && rm -rf node_modules/",
-    "server": "npm start",
-    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
+    "postinstall": "cd client && yarn install && yarn build && rm -rf node_modules/",
+    "server": "yarn start",
+    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
   },
   "repository": {
     "type": "git",
@@ -21,7 +21,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/blrobin2/critical-eye/issues"
   },
