@@ -1,18 +1,16 @@
-import React, { Component } from "react";
+import React from "react";
 import * as classNames from "classnames";
 
-export default class LinkButton extends Component {
-  render() {
-    const btnClass = classNames({
-      btn: true,
-      "text-white": true,
-      [`btn-${this.props.size}`]: !!this.props.size,
-      [`btn-${this.props["button-style"]}`]: !!this.props["button-style"]
-    });
-    return (
-      <a className={btnClass} href={this.props.href} target="_blank">
-        {this.props.children}
-      </a>
-    );
-  }
+export default function LinkButton(props) {
+  const btnClass = classNames({
+    btn: true,
+    "text-white": true,
+    [`btn-${props.size}`]: !!props.size,
+    [`btn-${props["button-style"]}`]: !!props["button-style"]
+  });
+  return (
+    <a className={btnClass} href={props.href} target="_blank">
+      {props.children}
+    </a>
+  );
 }

@@ -2,13 +2,16 @@ import React from "react";
 
 import AlbumSearchResultItem from "./AlbumSearchResultItem";
 
-export default function AlbumSearchResults(props) {
+export default function AlbumSearchResults({
+  albums,
+  onReview
+}) {
   return (
     <ul className="search-results">
-      {props.albums.map(album => (
+      {albums.map(album => (
         <AlbumSearchResultItem
           key={album.spotifyId}
-          onReview={props.onReview}
+          onReview={onReview}
           {...album}
         />
       ))}

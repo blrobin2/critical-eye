@@ -30,6 +30,7 @@ export default class AlbumTable extends Component {
       sortName: this.state.sortName,
       sortOrder: this.state.sortOrder,
       clearSearch: true,
+      paginationShowsTotal: this.getShowTotals,
       btnGroup: this.getButtonGroup,
       insertBtn: this.getInsertButton,
       insertModalHeader: this.addSpotifySearchToModal,
@@ -67,6 +68,15 @@ export default class AlbumTable extends Component {
     description: null
   });
 
+  getShowTotals = (start, to, total) => {
+    return (
+      <p>
+        Showing <strong>{start}</strong> to <strong>{to}</strong> of{" "}
+        <strong>{total}</strong> albums
+      </p>
+    );
+  };
+
   getButtonGroup = props => (
     <ButtonGroup size="sm">
       {props.exportCSVBtn}
@@ -93,7 +103,7 @@ export default class AlbumTable extends Component {
   );
 
   getCustomModalBody = (onClose, onSave) => (
-      <CustomModalBody onSave={onSave} {...this.state.currentAlbum} />
+    <CustomModalBody onSave={onSave} {...this.state.currentAlbum} />
   );
 
   getYearInput = (column, attrs) => (
@@ -107,12 +117,12 @@ export default class AlbumTable extends Component {
 
   getRatingInput = (column, attrs) => <RatingInput sronly="true" {...attrs} />;
 
-  handleAlbumSearch = async (query) => {
+  handleAlbumSearch = async query => {
     const albums = await albumSearch(query);
     this.setState({ albumSearch: albums });
   };
 
-  selectAlbumToReview = async (album) => {
+  selectAlbumToReview = async album => {
     const [yearReleased, lastId] = await Promise.all([
       getAlbumReleaseYear(album.spotifyId),
       getLastId()
@@ -123,7 +133,7 @@ export default class AlbumTable extends Component {
     });
   };
 
-  handleAfterInsertRow = async (album) => {
+  handleAfterInsertRow = async album => {
     await addAlbum(album);
     this.setState(prevState => ({
       albums: prevState.albums.concat(album),
