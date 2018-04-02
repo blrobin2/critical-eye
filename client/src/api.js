@@ -1,6 +1,5 @@
 export async function albumSearch(query) {
-  const search_json = await fetch(`/search?q=${query}`);
-  const search_results = await search_json.json();
+  const search_results = await fetchWithCredentials(`/search?q=${query}`);
 
   if (search_results.message) {
     alert(search_results.message);
@@ -17,8 +16,7 @@ export async function albumSearch(query) {
 }
 
 export async function getAlbumReleaseYear(spotifyId) {
-  const album_json = await fetch(`/album/${spotifyId}`);
-  const response = await album_json.json();
+  const response = await fetchWithCredentials(`/album/${spotifyId}`);
 
   if (response.message) {
     alert(response.message);
@@ -27,4 +25,13 @@ export async function getAlbumReleaseYear(spotifyId) {
 
   const [releaseYear] = response.album.release_date.split("-");
   return releaseYear;
+}
+
+export async function getUser() {
+  return await fetchWithCredentials('/user');
+}
+
+async function fetchWithCredentials(url) {
+  const json = await fetch(url, { credentials: 'include' });
+  return await json.json();
 }
