@@ -1,9 +1,9 @@
 export async function albumSearch(query) {
-  const search_results = await fetchWithCredentials(`/search?q=${query}`);
+  const search_results = await fetchWithCredentials(`/album/search?q=${query}`);
 
   if (search_results.message) {
     alert(search_results.message);
-    return;
+    return [];
   }
 
   return search_results.albums.items.map(album => ({
