@@ -21,9 +21,9 @@ passport.use(
       callbackURL: process.env.HOST_URL + "auth/spotify/callback/"
     },
     (accessToken, refreshToken, expires_in, profile, done) => {
-      console.log(expires_in);
       spotifyApi.setAccessToken(accessToken);
       spotifyApi.setRefreshToken(refreshToken);
+      setupRefreshAccessToken(expires_in);
 
       User.findOrCreate({
         where: { spotifyId: profile.id },
@@ -36,5 +36,14 @@ passport.use(
     }
   )
 );
+
+function setupRefreshAccessToken(expires_in) {
+  setInterval(function() {
+    clearInterval(this);
+    spotifyApi.refreshAccessToken().then(data => {
+      setupRefreshAccessToken(data.body.expires_in);
+    });
+  }, expires_in);
+}
 
 module.exports = passport;

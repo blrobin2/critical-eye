@@ -31,6 +31,14 @@ export async function getUser() {
   return await fetchWithCredentials('/user');
 }
 
+export async function login() {
+  window.location.replace('/auth/login');
+}
+
+export async function logout() {
+  window.location.replace('/auth/logout');
+}
+
 async function fetchWithCredentials(url) {
   const json = await fetch(url, { credentials: 'include' });
   return await json.json();

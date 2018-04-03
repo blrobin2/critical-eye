@@ -18,22 +18,27 @@ class App {
       "/static",
       express.static(path.join(__dirname, "../client", "build", "static"))
     );
-    this.app.use(
-      session({
+    this.app.use(session({
         store: new (require("connect-pg-simple")(session))(),
         secret: "keyboard cat",
         resave: false,
-        cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 days
-      })
-    );
+        saveUninitialized: false,
+        cookie: { maxAge: 3600 * 1000 } // 1 hour
+      }));
     this.app.use(passport.initialize());
     this.app.use(passport.session());
   }
 
   defineRoutes() {
-    this.app.get("/", ensureAuthenticated, function(req, res) {
+    this.app.get("/", function(req, res) {
       res.sendFile("index.html", {
         root: path.join(__dirname, "../client", "build")
+      });
+    });
+
+    this.app.get("/privacy-policy", function (req, res) {
+      res.sendFile("privacy-policy.html", {
+        root: path.join(__dirname, "pages")
       });
     });
 
@@ -58,6 +63,13 @@ class App {
       } catch ({ message }) {
         res.json({ message });
       }
+    });
+
+    // TODO: Setup login page, add api call to React.
+    // Setup logout call through React.
+
+    this.app.get("/auth/login", ensureAuthenticated, (req, res) => {
+      res.redirect("/");
     });
 
     // Auth
