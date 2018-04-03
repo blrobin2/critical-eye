@@ -41,6 +41,7 @@ function setupRefreshAccessToken(expires_in) {
   setInterval(function() {
     clearInterval(this);
     spotifyApi.refreshAccessToken().then(data => {
+      spotifyApi.setAccessToken(data.body.access_token);
       setupRefreshAccessToken(data.body.expires_in);
     });
   }, expires_in);
