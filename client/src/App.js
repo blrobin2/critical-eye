@@ -16,9 +16,7 @@ class App extends Component {
   }
 
   handleLogin = async () => {
-    await login();
-    const { user } = await getUser();
-    this.setState({ user });
+    login();
   };
 
   render() {
