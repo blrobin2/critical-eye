@@ -198,6 +198,11 @@ export default class AlbumTable extends Component {
           dataFormat={numberToStars}
           dataSort={true}
           caretRender={this.getCaret}
+          filter={{
+            type: 'NumberFilter',
+            delay: 1000,
+            numberComparators: ['=', '>=', '<=']
+          }}
           customEditor={{ getElement: this.getRatingInput }}
         >
           Rating
@@ -205,6 +210,7 @@ export default class AlbumTable extends Component {
         <TableHeaderColumn
           dataField="artist"
           dataSort={true}
+          filter={{ type: 'TextFilter', delay: 1000 }}
           caretRender={this.getCaret}
         >
           Artist
@@ -212,6 +218,7 @@ export default class AlbumTable extends Component {
         <TableHeaderColumn
           dataField="album"
           dataSort={true}
+          filter={{ type: 'TextFilter', delay: 1000 }}
           caretRender={this.getCaret}
         >
           Album
@@ -219,6 +226,7 @@ export default class AlbumTable extends Component {
         <TableHeaderColumn
           dataField="dateListened"
           dataFormat={humanDate}
+          filter={{ type: 'DateFilter', defaultValue: { date: new Date(), comparator: '>=' } }}
           dataSort={true}
           caretRender={this.getCaret}
           editable={{ type: "datetime-local" }}
@@ -228,6 +236,11 @@ export default class AlbumTable extends Component {
         <TableHeaderColumn
           dataField="yearReleased"
           dataSort={true}
+          filter={{
+            type: 'NumberFilter',
+            delay: 1000,
+            numberComparators: ['=', '>=', '<=']
+          }}
           caretRender={this.getCaret}
           customEditor={{ getElement: this.getYearInput }}
         >
