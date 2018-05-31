@@ -226,7 +226,7 @@ export default class AlbumTable extends Component {
         <TableHeaderColumn
           dataField="dateListened"
           dataFormat={humanDate}
-          filter={{ type: 'DateFilter', defaultValue: { date: new Date(), comparator: '>=' } }}
+          filter={{ type: 'DateFilter' }}
           dataSort={true}
           caretRender={this.getCaret}
           editable={{ type: "datetime-local" }}
