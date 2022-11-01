@@ -643,7 +643,7 @@ passport-oauth@1.0.0:
     passport-oauth1 "1.x.x"
     passport-oauth2 "1.x.x"
 
-passport-spotify@^1.0.0:
+passport-spotify@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/passport-spotify/-/passport-spotify-1.1.0.tgz#d0baa0a97907ca199ad9b33f0e8937b5f199ce19"
   integrity sha512-jLVtH7Z+5XW854H0mAsdpGJq5dMSwxQQu1jcXhq+3JlB8HuP5xkCLMuQ5K24S7WYh+cAHLrEKJPAoeo1D8CbUg==

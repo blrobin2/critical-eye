@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "4.6.2",
-    "classnames": "^2.2.5",
+    "classnames": "^2.3.2",
     "dexie": "^3.0.4",
     "react": "^16.5.0",
     "react-bootstrap-table": "^4.3.1",
