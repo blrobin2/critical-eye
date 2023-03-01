@@ -34,7 +34,7 @@
     "passport": "^0.6.0",
     "passport-spotify": "^1.1.0",
     "pg": "^7.18.2",
-    "sequelize": "^6.21.2",
+    "sequelize": "^6.29.0",
     "spotify-web-api-node": "^4.0.0"
   },
   "devDependencies": {
